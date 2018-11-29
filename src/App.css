@@ -12,9 +12,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: end;
+  justify-content: flex-end;
   color: white;
 }
 
@@ -29,4 +28,16 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.chat{
+	
+}
+.chat__messages{
+	margin-bottom: 60px;
+}
+.chat__input{
+	position:fixed;
+	bottom:0;
 }
