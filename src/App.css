@@ -37,7 +37,20 @@
 .chat__messages{
 	margin-bottom: 60px;
 }
+.chat__message{
+	max-width: 400px;	
+}
+.chat__message_right{
+	float:right;	
+}
+.chat__message-container{
+	width:100%;
+}
 .chat__input{
-	position:fixed;
-	bottom:0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 10px;
+    background: #fff;
 }
