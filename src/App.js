@@ -23,11 +23,6 @@ class App extends Component {
 		this.handleNameChange = this.handleNameChange.bind(this);
 		this.handleClick = this.handleClick.bind(this);
 	}
-	/*
-	 * TODO
-	 * scroll bottom
-	 * Put real name
-	 */
 	
 	componentDidMount() {
 		const { endpoint } = this.state;
@@ -46,6 +41,8 @@ class App extends Component {
 		sendMessageRequest( message, time, name, userId )
 			.then( (res)=> {
 				console.log(res);
+				let input = document.getElementById('messageInput');
+				input.value = '';
 			})
 			.catch( (err)=> {
 				console.log(err);
@@ -140,7 +137,7 @@ class App extends Component {
 					</div>
 					<div className="chat__input">
 						<div className="input-group mb-3">
-						  <input type="text" className="form-control" onChange={this.handleMessageChange} placeholder="message" aria-label="message" aria-describedby="send-btn"/>
+						  <input id="messageInput" type="text" className="form-control" onChange={this.handleMessageChange} placeholder="message" aria-label="message" aria-describedby="send-btn"/>
 						  <div className="input-group-append">
 							<button className="btn btn-outline-secondary" type="button" id="send-btn" onClick={()=> this.sendMessage() }>Button</button>
 						  </div>
