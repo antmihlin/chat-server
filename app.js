@@ -44,6 +44,10 @@ app.use(router);
 let socketConnection = null;
 
 io.on("connection", socket => {
+	console.log("New client connected"), setInterval(
+	  () => getApiAndEmit(socket),
+	  5000
+	);
 	socketConnection = socket;
 	socket.on("disconnect", () => console.log("Client disconnected"));
 });
