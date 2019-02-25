@@ -2,10 +2,22 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const axios = require("axios");
+const bodyParser = require('body-parser');
+const expressSession = require('express-session');
+
+const path = require('path');
+require('dotenv').config();
 const port = process.env.PORT || 4001;
 //const index = require("./routes/index");
 const app = express();
 const cors = require('cors');
+const routes = require('./routes');
+
+const mongo = require('mongodb');
+const db = require('./server/config/database');
+
+// Config
+global.appRoot = path.resolve(__dirname);
 
 app.use(cors()); // Use this after the variable declaration
 
@@ -19,8 +31,32 @@ global.messages = [];
 
 //______________________________________________________________________
 
-//const express = require("express");
+// Configuring Passport
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('./server/models/user.model');
+//______________________________________________________________________
+
 const router = express.Router();
+
+//_____________________________________
+// Parsers
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000 }));
+
+app.use(passport.initialize());
+app.use(passport.session({ cookie: { maxAge : 10000 }}));
+
+passport.use(new LocalStrategy(	User.authenticate()	));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//_____________________________________
+
+// Routes
+app.use('/user', routes.userRoute);
+
 router.get("/", (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Credentials', 'false');
