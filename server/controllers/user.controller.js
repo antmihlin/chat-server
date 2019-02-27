@@ -17,9 +17,9 @@ exports.loginPage = function(req, res) {
 		<form method="post" action="${req.baseUrl}/login" >
 			<h1>Login</h1>
 			<label>Username</label>
-			<input type="text"/>
+			<input type="text" name="username"/>
 			<label>Password</label>
-			<input type="password"/>
+			<input type="password" name="password"/>
 			<button type="submit" >Login</button>
 		</form>
 	`);
@@ -68,7 +68,7 @@ exports.createPage = function(req, res) {
 			<input type="text" name="username"/>
 			<label>Password</label>
 			<input type="password" name="password"/>
-			<button type="submit" >Login</button>
+			<button type="submit" >Register</button>
 		</form>
 	`);
 };

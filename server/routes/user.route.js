@@ -12,11 +12,11 @@ const auth = require('../middlewares/auth.middleware');
 router.post('/login' ,passport.authenticate('local'), userCtrl.login);
 router.get('/login-static' , userCtrl.loginPage);
 router.get('/register' , userCtrl.createPage);
-router.post('/logout' ,auth.isLoggedIn(), userCtrl.logout);
+router.post('/logout' ,passport.authenticate('jwt', {session: false}), userCtrl.logout);
 router.post('/' , userCtrl.create);
-router.get('/' ,auth.isLoggedIn(), userCtrl.findAll);
-router.get('/:id' ,auth.isLoggedIn(), userCtrl.findOne);
-router.put('/:id' ,auth.isLoggedIn(), userCtrl.update);
-router.delete('/:id' ,auth.isLoggedIn(), userCtrl.delete);
+router.get('/' ,passport.authenticate('jwt', {session: false}), userCtrl.findAll);
+router.get('/:id' ,passport.authenticate('jwt', {session: false}), userCtrl.findOne);
+router.put('/:id' ,passport.authenticate('jwt', {session: false}), userCtrl.update);
+router.delete('/:id' ,passport.authenticate('jwt', {session: false}), userCtrl.delete);
 
 module.exports = router;
