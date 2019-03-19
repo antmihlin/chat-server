@@ -42,8 +42,17 @@ exports.login = function (req, res) {
 		if (err) {
 			return next(err);
 		}
-		const token = jwt.sign(req.user.toJSON(), 'your_jwt_secret' ,{ expiresIn: '15m' } );
-		return res.status(200).json({ id: req.user.id, username: req.user.username, token });
+		const token = jwt.sign(req.user.toJSON(), 'your_jwt_secret' ,{ expiresIn: '30m' } );
+		let userData = {};
+		User.findById( req.user.id, function(err, data){
+			if(err) {
+				res.status(500).send({message: err.message});
+			} else {
+				userData = data;
+				return res.status(200).json({ id: req.user.id, username: req.user.username, token,nickName:userData.nickName });
+			}
+		});
+		
 	});
 };
  

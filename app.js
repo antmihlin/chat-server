@@ -56,6 +56,10 @@ passport.deserializeUser(User.deserializeUser());
 
 // Routes
 app.use('/user', routes.userRoute);
+app.use('/group', routes.groupRoute);
+app.use('/message', routes.messageRoute);
+app.use('/messageState', routes.messageStateRoute);
+app.use('/file', routes.fileRoute);
 
 router.get("/", (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
@@ -63,15 +67,35 @@ router.get("/", (req, res) => {
   res.send({ response: "I am alive" }).status(200);
 });
 
-router.post("/", (req, res) => {
-  res.set({
-	  'Access-Control-Allow-Origin': 'http://localhost:3006', 
-	  'Access-Control-Allow-Credentials': 'false'
-  });
-  global.messages.push(req.query);
-  getApiAndEmit(socketConnection);
-  res.send(req.query).status(200);
+//Receives messages
+//Emit socket
+router.post("/send/:room/", (req, res) => {
+	res.set({
+		'Access-Control-Allow-Origin': 'http://localhost:3006', 
+		'Access-Control-Allow-Credentials': 'false'
+	});
+	//global.messages.push(req.query);
+	//getApiAndEmit(socketConnection);
+	//res.send(req.query).status(200);
+  
+    let room = req.params.room;
+    let message = req.query;
+
+    io.sockets.in(room).emit('message', { room: room, message: message });
+
+    res.end('message sent');
 });
+
+/*
+app.post('/send/:room/', function(req, res) {
+    var room = req.params.room
+        message = req.body;
+
+    io.sockets.in(room).emit('message', { room: room, message: message });
+
+    res.end('message sent');
+});
+ */
 
 app.use(router);
 
@@ -79,6 +103,10 @@ app.use(router);
 
 let socketConnection = null;
 
+/*
+ * User's subscription to socket
+ * Emits every 5 seconds
+ 
 io.on("connection", socket => {
 	console.log("New client connected"), setInterval(
 	  () => getApiAndEmit(socket),
@@ -87,9 +115,39 @@ io.on("connection", socket => {
 	socketConnection = socket;
 	socket.on("disconnect", () => console.log("Client disconnected"));
 });
+
 const getApiAndEmit = async socket => {
     socket.emit("FromAPI",global.messages);
 };
+*/
+io.sockets.on('connection', (socket)=>{
+	
+	//console.log("New client connected"), setInterval(
+	 // () => getApiAndEmit(socket),
+	//  5000
+	//);
+	
+    socket.on('subscribe', (room) =>{
+        console.log('joining room', room);
+        socket.join(room);
+    });
+
+    socket.on('unsubscribe', (room) =>{  
+        console.log('leaving room', room);
+        socket.leave(room);
+    });
+
+    socket.on('send', (data)=> {
+        console.log('sending message',data);
+        io.sockets.in(data.room).emit(data);
+    });
+	
+	socket.on("disconnect", () => console.log("Client disconnected"));
+});
+
+const getApiAndEmit = async socket => {
+    socket.emit("FromAPI",global.messages);
+};
+
+
 server.listen(port, () => console.log(`Listening on port ${port}`));
-
-
