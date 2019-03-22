@@ -139,7 +139,7 @@ io.sockets.on('connection', (socket)=>{
 
     socket.on('send', (data)=> {
         console.log('sending message',data);
-        io.sockets.in(data.room).emit(data);
+        io.sockets.in(data.room).emit('send',data);
     });
 	
 	socket.on("disconnect", () => console.log("Client disconnected"));

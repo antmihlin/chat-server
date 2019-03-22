@@ -22,9 +22,10 @@ exports.findAll = function(req, res) {
 	if( query.userId !== undefined ){
 		const { offset, limit } = query;
 		query = omit(query, ['offset', 'limit']);
+		query.users = [query.userId];
 		let result = { count:null, pagesCount:null, value:null, links: null	};
 
-		Group.find(query, null, { skip: +offset, limit: +limit }, function(err, data) {
+		Group.find({users:query.userId}, function(err, data) {
 			if(err) {
 				res.status(500).send({message: err.message});
 			} else {
@@ -36,7 +37,7 @@ exports.findAll = function(req, res) {
 						result.count = count;
 						res.send(result);
 					}
-				})
+				});
 			}
 		} );
 	}else{
